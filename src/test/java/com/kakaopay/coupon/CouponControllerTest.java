@@ -8,6 +8,8 @@ import com.kakaopay.coupon.domain.coupon.entity.Coupon;
 import com.kakaopay.coupon.domain.user.entity.User;
 import com.kakaopay.coupon.repository.coupon.CouponRepository;
 import com.kakaopay.coupon.repository.user.UserRepository;
+import com.kakaopay.coupon.response.CommonResult;
+import com.kakaopay.coupon.response.ListResult;
 import com.kakaopay.coupon.service.coupon.CouponService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +77,7 @@ public class CouponControllerTest {
     }
 
     @Test
-    public void create() throws Exception {
+    public void createControllerTest() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("size", "1");
         mockMvc.perform(post("/v1/coupons").params(params))
@@ -88,7 +90,7 @@ public class CouponControllerTest {
     }
 
     @Test
-    public void issue() throws Exception {
+    public void issueControllerTest() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("userId", "1");
         mockMvc.perform(put("/v1/coupons/issue").params(params))
@@ -99,40 +101,38 @@ public class CouponControllerTest {
                 .andExpect(jsonPath("$.msg").exists());
     }
 
-//    @Test
-//    public void use() throws Exception {
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("userId", "1");
-//        mockMvc.perform(put("/v1/coupons/issue").params(params))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.success").value(true))
-//                .andExpect(jsonPath("$.code").value(0))
-//                .andExpect(jsonPath("$.msg").exists());
-//    }
-//
-//    @Test
-//    public void dueDateTodayCoupon() throws Exception {
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("userId", "1");
-//        mockMvc.perform(put("/v1/coupons/issue").params(params))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.success").value(true))
-//                .andExpect(jsonPath("$.code").value(0))
-//                .andExpect(jsonPath("$.msg").exists());
-//    }
-//
-//    @Test
-//    public void notifyExpreCoupons() throws Exception {
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("userId", "1");
-//        mockMvc.perform(put("/v1/coupons/issue").params(params))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.success").value(true))
-//                .andExpect(jsonPath("$.code").value(0))
-//                .andExpect(jsonPath("$.msg").exists());
-//    }
+    @Test
+    public void generateControllerTest() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("size", "1000");
+        mockMvc.perform(post("/v1/coupons/generate").params(params))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    public void createServiceTest() {
+        //given
+        Long size = 2L;
+
+        //when
+        ListResult<String> result = couponService.create(size);
+
+        //then
+        assert(result.isSuccess());
+        assert(result.getList().size() == size);
+    }
+
+    @Test
+    public void issueServiceTest() {
+        //given
+        Long userId = 1L;
+
+        //when
+        CommonResult result = couponService.issueCoupon(userId);
+
+        //then
+        assert(result.isSuccess());
+        assert(result.getMsg().equals("test"));
+    }
 }
