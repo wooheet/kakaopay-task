@@ -199,9 +199,7 @@ Description : 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스
               만료일을 테스트 하기 위해 10000단위 레코드 별로 만료일 +1 day 증가
 Return value: HTTP status 201 (Created) 
 Payload Example (required parameters)
-{
-    "size": "20000"
-}
+- http://{CouponApiServer}/v1/coupons?size=100000
 
 ----------------------------------------------------------------------------------------------------
 
@@ -213,12 +211,15 @@ Return value: HTTP status 201 (Created)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /v1/coupons/{id}
+EndPoint : /v1/coupons/use/{useId}
 Method : PUT 
 Description : 생성된 쿠폰중 하나를 사용자에게 지급 
               사용자에게 지급한 쿠폰을 사용
               사용된 쿠폰을 사용 취소
 Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
+
+Payload Example (required parameters)
+- http://{CouponApiServer}/v1/coupons/use/1?couponNum=g071v010m0L0tX3q
 
 |-----------|--------------|---------------------------------------------------|
 | Parameter |Parameter Type| Description                                       |
@@ -226,44 +227,17 @@ Return value: HTTP status 200 (OK), 404 (NOT_FOUND)
 | id        | @PathParam   | Coupon id                                         |
 |-----------|--------------|---------------------------------------------------|
 
-Payload Example (required parameters)
-생성된 쿠폰중 하나를 사용자에게 지급 
-{
-    "status" : "ISSUED",
-    "userId" : "joyworld007"
-}
-사용자에게 지급한 쿠폰을 사용
-{
-    "status" : "USED"
-}
-사용된 쿠폰을 사용 취소
-{
-    "status" : "ISSUED"
-}
-
-Response Body example
-성공시 
-{
-    "code": "SUCCESS",
-    "message": "OK"
-}            
-쿠폰 만료 시  
-{
-    "code": "COUPON_EXPIRED",
-    "message": "Coupon is Expired"
-}
-요청 조건이 맞지 않을시   
-{
-    "code": "BAD_REQUEST",
-    "message": "Bad Request"
-}
-
 ----------------------------------------------------------------------------------------------------
 
 EndPoint : /v1/coupons
 Method : GET
 Description : 사용자에게 지급된 쿠폰을 조회
-Return value: HTTP status 200 (OK) 
+Return value: 
+{
+    "couponNum": "g071v010m0L0tX3q",
+    "status": "USED",
+    "expirationAt": "2020-06-19T01:50:48"
+}
 
 |-----------|--------------|---------------------------------------------------|
 | Parameter |Parameter Type| Description                                       |
@@ -275,7 +249,7 @@ Return value: HTTP status 200 (OK)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /v1/coupons/today-expired-coupons
+EndPoint : /v1/coupons/duedate-today
 Method : GET
 Description : 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록을 조회
 Return value: HTTP status 200 (OK) 
@@ -288,7 +262,7 @@ Return value: HTTP status 200 (OK)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /v1/coupons/notify-expire-coupons
+EndPoint : /v1/coupons/notify-expire
 Method : GET
 Description : 만료 day일전 쿠폰을 조회하여 logger info 알림
 Return value: HTTP status 200 (OK) 
@@ -298,45 +272,3 @@ Return value: HTTP status 200 (OK)
 |-----------|--------------|---------------------------------------------------|
 | day       | @QueryParam  | search expired plus day                           |
 |-----------|--------------|---------------------------------------------------|
-
-----------------------------------------------------------------------------------------------------
-
-EndPoint : /v1/coupons/{id}
-Method : GET
-Description : 쿠폰 정보 조회 ( CQRS 성능 테스트 용 )
-Return value: HTTP status 200 (OK) 
-
-|-----------|--------------|---------------------------------------------------|
-| Parameter |Parameter Type| Description                                       |
-|-----------|--------------|---------------------------------------------------|
-| id        | @PathParam   | Coupon id                                         |
-|-----------|--------------|---------------------------------------------------|
-
-
-
-
-
-
-
-
-## 기능명세서
-- 랜덤한 코드의 쿠폰을 N개 생성하여 데이터베이스에 보관 
-- 생성된 쿠폰을 사용자에게 지급 
-- 사용자에게 지급된 쿠폰을 조회 
-- 지급된 쿠폰중 하나를 사용(재사용 불가)
-- 지급된 쿠폰중 하나를 사용 취소(재사용 가능)
-- 발급된 쿠폰중 당일 만료된 전체 쿠폰 목록 조회
-- 발급된 쿠폰중 만료 3일전 사용자에게 메세지("쿠폰이 3일 후 만료됩니다.")를 발송하는 기능 구현
-
-## 제약사항
-- JWT를 이용해 Token기반 API 인증
-- API호출시, HTTP Header에 발급받은 토큰을 가지고 호출 
-- user DB에 계정을 저장하고 토큰을 생성하여 출력 
-- 패스워드는 bcrypt로 저장 
-- sign in시 토큰 발급 
-- 100억개 이상 쿠폰 관리 저장 관리 가능하도록 구현할것(1파티션당 500만 row 저장)
-- 10만개 이상 벌크 csv import 기능
-- 대용량 트래픽(TPS 10k 이상)을 고려한 시스템 구현
-- 성능테스트 결과 / 피드백
-
-
