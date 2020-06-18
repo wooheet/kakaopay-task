@@ -155,19 +155,20 @@ public class CouponServiceImpl implements CouponService {
   @Override
   @Transactional
   public CommonResult generate(Long size) {
-    LocalDateTime expireDate = LocalDateTime.now().plusDays(expiredDate);
-    List<CouponDto> couponDtoList = new ArrayList<>();
+    List<CouponDto> coupons = new ArrayList<>();
     for (long i = 1; i <= size; i++) {
-      couponDtoList.add(CouponDto.builder()
-              .expirationAt(expireDate)
-              .status(CouponStatus.CREATED).build());
+      coupons.add(CouponDto.builder()
+              .couponNum(String.valueOf(i))
+              .status(CouponStatus.CREATED)
+              .expirationAt(LocalDateTime.now().plusDays(expiredDate))
+              .build());
 
       if (i % BATCH_SIZE == 0) {
-        couponJdbcRepository.createCoupon(couponDtoList);
-        couponDtoList.clear();
+        couponJdbcRepository.createCoupon(coupons);
+        coupons.clear();
       }
     }
-    couponJdbcRepository.createCoupon(couponDtoList);
+    couponJdbcRepository.createCoupon(coupons);
     return responseService.getSuccessResult();
   }
 

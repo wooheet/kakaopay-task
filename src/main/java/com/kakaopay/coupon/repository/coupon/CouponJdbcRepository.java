@@ -38,13 +38,18 @@ public class CouponJdbcRepository {
 
   private int batchInsert(int batchSize, int batchCount, List<CouponDto> subItems) {
         jdbcTemplate.batchUpdate(
-                "INSERT INTO COUPON (`STATUS`, `EXPIRE_DATE`, `CREATE_DATE`) VALUES (?, ?, ?)",
+                "INSERT INTO COUPON (`COUPON_NUM`, `STATUS`, `EXPIRATION_AT`, `CREATED_AT`, `UPDATED_AT`, `ENABLED`, `ISSUED`) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                   @Override
                   public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    ps.setString(1, subItems.get(i).getStatus().toString());
-                    ps.setString(2, subItems.get(i).getExpirationAt().toString());
-                    ps.setString(3, LocalDateTime.now().toString());
+                        ps.setString(1, subItems.get(i).getCouponNum());
+                        ps.setString(2, subItems.get(i).getStatus().toString());
+                        ps.setString(3, subItems.get(i).getExpirationAt().toString());
+                        ps.setString(4, LocalDateTime.now().toString());
+                        ps.setString(5, LocalDateTime.now().toString());
+                        ps.setBoolean(6, true);
+                        ps.setBoolean(7, false);
                   }
 
                   @Override

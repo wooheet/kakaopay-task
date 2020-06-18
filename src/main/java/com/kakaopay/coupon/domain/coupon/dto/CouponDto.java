@@ -23,6 +23,7 @@ public class CouponDto {
   //TODO setter 삭제
   @Id
   private Long id;
+  private String couponNum;
   private CouponStatus status;
   private LocalDateTime expirationAt;
   private LocalDateTime createdAt;
@@ -33,6 +34,7 @@ public class CouponDto {
 
   protected CouponDto(Coupon entity) {
     this.id = entity.getId();
+    this.couponNum = entity.getCouponNum();
     this.status = entity.getStatus();
     this.expirationAt = entity.getExpirationAt();
     this.createdAt = entity.getCreatedAt();
