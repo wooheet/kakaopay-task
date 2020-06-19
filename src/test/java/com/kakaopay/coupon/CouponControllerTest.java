@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,9 @@ public class CouponControllerTest {
 
     @Autowired
     private CouponRepository couponRepository;
+
+    @MockBean
+    private Pageable pageable;
 
     @Autowired
     private CouponService couponService;
@@ -133,6 +138,36 @@ public class CouponControllerTest {
 
         //then
         assert(result.isSuccess());
+        assert(result.getCode() == 0);
         assert(result.getMsg().equals("test"));
+    }
+
+    @Test
+    public void useServiceTest() {
+        //given
+        Long userId = 1L;
+        //when
+        couponService.issueCoupon(userId);
+        CommonResult result = couponService.useCoupon("test", true);
+
+        //then
+        assert(result.isSuccess());
+        assert(result.getCode() == 0);
+        assert(result.getMsg().equals("test"));
+    }
+
+    @Test
+    public void useCancelServiceTest() {
+        //given
+        Long userId = 1L;
+        //when
+        couponService.issueCoupon(userId);
+        couponService.useCoupon("test", true);
+        CommonResult result = couponService.useCoupon("test", false);
+
+        //then
+        assert(result.isSuccess());
+        assert(result.getMsg().equals("test"));
+        assert(result.getCode() == 0);
     }
 }

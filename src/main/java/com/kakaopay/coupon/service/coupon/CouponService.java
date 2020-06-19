@@ -20,7 +20,7 @@ public interface CouponService {
   CommonResult issueCoupon(Long userId);
 
   @Transactional
-  CommonResult useCoupon(String couponNum, Boolean cancel);
+  CommonResult useCoupon(String couponNum, Boolean useValue);
 
   CommonResult findCouponByUserId(Long UserId, Pageable pageable);
 

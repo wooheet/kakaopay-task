@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     driver-class-name: org.h2.Driver
@@ -38,6 +39,7 @@ server:
     max-connections: 10000
     max-threads: 200
     min-spare-threads: 1
+  port: 19090
 
 ---
 spring.profiles: dev

@@ -94,10 +94,10 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
-  public CommonResult useCoupon(String couponNum, Boolean cancel) {
+  public CommonResult useCoupon(String couponNum, Boolean useValue) {
     Coupon coupon = couponRepository.findByCouponNum(couponNum)
             .orElseThrow(CCouponNotFoundException::new);
-    if (!cancel) {
+    if (useValue) {
         if (CouponStatus.ISSUED.equals(coupon.getStatus()) && coupon.isIssued()) {
             coupon.useCoupon(CouponIssue.builder()
                     .userId(coupon.getCouponIssue().getUserId())
