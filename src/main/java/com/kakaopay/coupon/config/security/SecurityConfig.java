@@ -39,7 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/v1/signup").permitAll()
                 .antMatchers("/v1/signin").permitAll()
-//                .antMatchers("/v1/coupons/generate/**").permitAll()
                 .antMatchers("/v1/coupons/**").permitAll()
                 .anyRequest().hasRole("USER")
                 .and().exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())

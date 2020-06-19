@@ -17,14 +17,20 @@
  OpenJDK11
  Spring Boot 2.3.1.RELEASE
  Spring Data Jpa
+ Spring Security
+ Gradle
+ lombok
+ MySql / h2Database
  Spring Data Jdbc(Batch Update)
  Swagger2
  Domain Driven Design
- CQRS Pettern
 ````
 
 ### <a name="chapter-2"></a>How to Run
 ```
+Profile
+- dev, none
+
 1. 실행
 ./gradlew bootrun
 
@@ -245,7 +251,7 @@ Return value: HTTP status 201 (Created)
 
 ----------------------------------------------------------------------------------------------------
 
-EndPoint : /v1/coupons/use/{useId}
+EndPoint : /v1/coupons/use/{value}
 Method : PUT 
 Description : 생성된 쿠폰중 하나를 사용자에게 지급 
               사용자에게 지급한 쿠폰을 사용
@@ -258,7 +264,9 @@ Payload Example (required parameters)
 |-----------|--------------|---------------------------------------------------|
 | Parameter |Parameter Type| Description                                       |
 |-----------|--------------|---------------------------------------------------|
-| id        | @PathParam   | Coupon id                                         |
+| value     | @PathParam   | use value                                         |
+|-----------|--------------|---------------------------------------------------|
+| num       | @PathParam   | Coupon number                                     |
 |-----------|--------------|---------------------------------------------------|
 
 ----------------------------------------------------------------------------------------------------

@@ -52,11 +52,11 @@ public class CouponController {
   }
 
   @ApiOperation(value = "쿠폰 사용/취소", notes = "사용자가 지급된 쿠폰중 하나를 사용/취소")
-  @PutMapping("use/{cancel}")
+  @PutMapping("use/{value}")
   public CommonResult useCoupon(
           @ApiParam(value = "coupon number", required = true)
-          @RequestParam @Valid String couponNum, @PathVariable Long cancel) {
-    return couponService.useCoupon(couponNum, cancel == 1);
+          @RequestParam @Valid String couponNum, @PathVariable Long value) {
+    return couponService.useCoupon(couponNum, value == 1);
   }
 
   @ApiOperation(value = "당일 쿠폰 만료 조회", notes = "발급된 쿠폰중 당일 만료된 전체 쿠폰 목록 조회")
