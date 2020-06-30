@@ -122,6 +122,7 @@ Profile
    유저아이디
    롤   
 ```
+<img src="src/main/java/resources/docs/entity.png" witdh="100%" height="100%">
 
 ### <a name="chapter-7"></a>Explanation of REST 
 |HTTP Method|Usage|
