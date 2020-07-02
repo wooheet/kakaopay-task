@@ -2,7 +2,7 @@ package com.kakaopay.coupon.service.user;
 
 import com.google.common.collect.Sets;
 import com.kakaopay.coupon.domain.common.type.UserRoleType;
-import com.kakaopay.coupon.domain.user.SignupEvent;
+import com.kakaopay.coupon.handler.SignupEvent;
 import com.kakaopay.coupon.domain.user.entity.User;
 import com.kakaopay.coupon.exception.CEmailSigninFailedException;
 import com.kakaopay.coupon.exception.CEmailSignupFailedException;
