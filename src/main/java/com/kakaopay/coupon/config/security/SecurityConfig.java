@@ -54,7 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/v1/signup").permitAll()
                 .antMatchers("/v1/signin").permitAll()
-                .antMatchers("/v1/coupons/**").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().hasRole("USER")
 //                .expressionHandler(expressionHandler())

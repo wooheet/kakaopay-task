@@ -97,49 +97,50 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
-  public CommonResult useCoupon(String couponNum, Boolean useValue) {
+  public CommonResult useCoupon(Long userId) {
+    List<Coupon> coupons = couponRepository.findByCouponIssueUserId(userId);
+    Coupon coupon = coupons.stream().filter(Coupon::isIssued)
+          .filter(c -> !c.isExpired()).filter(c -> c.getStatus().equals(CouponStatus.ISSUED))
+          .findFirst().orElseThrow(CCouponNotFoundException::new);
+
+    coupon.useCoupon(CouponIssue.builder()
+            .userId(coupon.getCouponIssue().getUserId())
+            .issuedAt(coupon.getCouponIssue().getIssuedAt())
+            .usedAt(LocalDateTime.now())
+            .build());
+    coupon.updateDate();
+
+    return responseService.getSuccessResult(coupon.getCouponNum());
+  }
+
+  @Override
+  @Transactional
+  public CommonResult cancelCoupon(String couponNum) {
     Coupon coupon = couponRepository.findByCouponNum(couponNum)
             .orElseThrow(CCouponNotFoundException::new);
-    if (useValue) {
-        if (!coupon.isExpired() && coupon.isIssued()
-                && CouponStatus.ISSUED.equals(coupon.getStatus()) ) {
-            coupon.useCoupon(CouponIssue.builder()
-                    .userId(coupon.getCouponIssue().getUserId())
-                    .issuedAt(coupon.getCouponIssue().getIssuedAt())
-                    .usedAt(LocalDateTime.now())
-                    .build());
-            coupon.updateDate();
-        } else {
-          String msg = "";
-          if (coupon.isExpired()) msg = ResultCode.COUPON_EXPIRED.getMessage();
-          if (!coupon.isIssued()
-              && !CouponStatus.ISSUED.equals(coupon.getStatus())) msg = ResultCode.COUPON_NOT_ISSUED.getMessage();
 
-            return responseService.getFailResult(msg
-                    + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
-        }
+    if (!coupon.isExpired() && coupon.isIssued()
+            && !coupon.isEnabled() && CouponStatus.USED.equals(coupon.getStatus())) {
+
+      coupon.cancelCoupon(CouponIssue.builder()
+              .userId(coupon.getCouponIssue().getUserId())
+              .issuedAt(coupon.getCouponIssue().getIssuedAt())
+              .usedAt(null)
+              .build());
+      coupon.updateDate();
     } else {
-        if (!coupon.isExpired() && coupon.isIssued() && !coupon.isEnabled()
-                && CouponStatus.USED.equals(coupon.getStatus()) ) {
-            coupon.cancelCoupon(CouponIssue.builder()
-                    .userId(coupon.getCouponIssue().getUserId())
-                    .issuedAt(coupon.getCouponIssue().getIssuedAt())
-                    .usedAt(null)
-                    .build());
-            coupon.updateDate();
-        } else {
-          String msg = "";
-          if (coupon.isExpired()) msg = ResultCode.COUPON_EXPIRED.getMessage();
-          if (!coupon.isIssued()) msg = ResultCode.COUPON_NOT_ISSUED.getMessage();
-          if (coupon.isEnabled() && CouponStatus.USED.equals(coupon.getStatus()))
-              msg = ResultCode.COUPON_NOT_USED.getMessage();
+      String msg = "";
+      if (coupon.isExpired()) msg = ResultCode.COUPON_EXPIRED.getMessage();
+      if (!coupon.isIssued()) msg = ResultCode.COUPON_NOT_ISSUED.getMessage();
+      if (coupon.isEnabled() && CouponStatus.USED.equals(coupon.getStatus()))
+        msg = ResultCode.COUPON_NOT_USED.getMessage();
 
-            return responseService.getFailResult(msg
-                    + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
-        }
+      return responseService.getFailResult( msg
+              + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
     }
     return responseService.getSuccessResult(coupon.getCouponNum());
   }
+
 
   @Override
   public CommonResult findCouponByUserId(Long UserId, Pageable pageable) {

@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
+  List<Coupon> findByCouponIssueUserId(Long userId);
 
   Page<Coupon> findAllByCouponIssue_UserId(Long userId, Pageable pageable);
 
