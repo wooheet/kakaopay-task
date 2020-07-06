@@ -78,7 +78,6 @@ public class CouponServiceImpl implements CouponService {
               .filter(c -> !c.isIssued())
               .filter(c -> !c.isExpired()).findFirst().orElseThrow(CCouponNotFoundException::new);
 
-
       if (coupon.getStatus().equals(CouponStatus.CREATED)) {
           coupon.issueCoupon(CouponIssue.builder()
                   .userId(userId)
@@ -111,8 +110,12 @@ public class CouponServiceImpl implements CouponService {
                     .build());
             coupon.updateDate();
         } else {
-          //TODO 발행된 쿠폰이 아니다 등 에러 메시지 다양화
-            return responseService.getFailResult(ResultCode.COUPON_NOT_ISSUED.getMessage()
+          String msg = "";
+          if (coupon.isExpired()) msg = ResultCode.COUPON_EXPIRED.getMessage();
+          if (!coupon.isIssued()
+              && !CouponStatus.ISSUED.equals(coupon.getStatus())) msg = ResultCode.COUPON_NOT_ISSUED.getMessage();
+
+            return responseService.getFailResult(msg
                     + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
         }
     } else {
@@ -125,7 +128,13 @@ public class CouponServiceImpl implements CouponService {
                     .build());
             coupon.updateDate();
         } else {
-            return responseService.getFailResult(ResultCode.COUPON_NOT_USED.getMessage()
+          String msg = "";
+          if (coupon.isExpired()) msg = ResultCode.COUPON_EXPIRED.getMessage();
+          if (!coupon.isIssued()) msg = ResultCode.COUPON_NOT_ISSUED.getMessage();
+          if (coupon.isEnabled() && CouponStatus.USED.equals(coupon.getStatus()))
+              msg = ResultCode.COUPON_NOT_USED.getMessage();
+
+            return responseService.getFailResult(msg
                     + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
         }
     }
