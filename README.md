@@ -7,7 +7,7 @@
 * [Strategy](#chapter-4)
 * [Domain](#chapter-5)
 * [Entity](#chapter-6)
-* [Explanation of REST](#chapter-7)
+* [Architecture](#chapter-7)
 * [Api Feature list](#chapter-8)
 * [Api Endpoint](#chapter-9)
 * [Performance Test](#chapter-10)
@@ -124,13 +124,8 @@ Profile
 ```
 <img src="src/main/resources/docs/entity.png" witdh="60%" height="50%">
 
-### <a name="chapter-7"></a>Explanation of REST 
-|HTTP Method|Usage|
-|:---|:---|
-|GET   |Receive a read-only data      |
-|PUT   |Overwrite an existing resource|
-|POST  |Creates a new resource        |
-|DELETE|Deletes the given resource    |
+### <a name="chapter-7"></a>Architecture 
+<img src="src/main/resources/docs/architecture.png" witdh="60%" height="50%">
 
 ### <a name="chapter-8"></a>Api Feature list 
 ```
