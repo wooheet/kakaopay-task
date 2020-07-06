@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.domain.common.security;
+package com.kakaopay.coupon.domain.common.oauth2;
 
 import lombok.Builder;
 import lombok.Getter;

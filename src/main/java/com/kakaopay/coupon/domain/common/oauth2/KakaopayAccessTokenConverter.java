@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.domain.common.security;
+package com.kakaopay.coupon.domain.common.oauth2;
 
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;

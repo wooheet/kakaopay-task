@@ -1,6 +1,6 @@
 package com.kakaopay.coupon.config;
 
-import com.kakaopay.coupon.domain.common.security.CurrentUser;
+import com.kakaopay.coupon.domain.common.oauth2.CurrentUser;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

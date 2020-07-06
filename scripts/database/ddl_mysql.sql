@@ -32,7 +32,20 @@ create table coupon
     issued_at     datetime    null,
     issued       bit         null,
     enabled       bit         null
-);
+)
+PARTITION BY KEY (id)
+PARTITIONS 200;
+
+-- PARTITION BY RANGE ( YEAR(id) ) (
+--
+-- PARTITION p0 VALUES LESS THAN (5000000),
+--
+-- PARTITION p1 VALUES LESS THAN (10000000),
+--
+-- PARTITION p2 VALUES LESS THAN MAXVALUE
+--
+-- );
+
 
 
 

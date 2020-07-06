@@ -1,6 +1,6 @@
 //package com.kakaopay.coupon.config;
 //
-//import com.kakaopay.coupon.domain.common.security.KakaopayAccessTokenConverter;
+//import com.kakaopay.coupon.domain.common.oauth2.KakaopayAccessTokenConverter;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -63,6 +63,8 @@
 //                .antMatchers("/v1/signup").permitAll()
 //                .antMatchers("/v1/signin").permitAll()
 //                .antMatchers("/v1/coupons/**").permitAll()
+//                .antMatchers("/v1/users").permitAll()
+//                .antMatchers("/v1/tet").permitAll()
 //                .anyRequest().authenticated();
 //    }
 //

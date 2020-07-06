@@ -75,13 +75,17 @@ public class CouponServiceImpl implements CouponService {
     Coupon coupon;
     if (coupons.size() > 0) {
       coupon = coupons.stream().filter(Coupon::isEnabled)
-              .filter(c -> !c.isIssued()).findFirst().orElseThrow(CCouponNotFoundException::new);
+              .filter(c -> !c.isIssued())
+              .filter(c -> !c.isExpired()).findFirst().orElseThrow(CCouponNotFoundException::new);
+
 
       if (coupon.getStatus().equals(CouponStatus.CREATED)) {
           coupon.issueCoupon(CouponIssue.builder()
                   .userId(userId)
                   .issuedAt(LocalDateTime.now())
                   .build());
+
+          coupon.updateDate();
       } else {
         return responseService.getFailResult(ResultCode.COUPON_NOT_CREATED.getMessage()
                 + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
@@ -98,23 +102,28 @@ public class CouponServiceImpl implements CouponService {
     Coupon coupon = couponRepository.findByCouponNum(couponNum)
             .orElseThrow(CCouponNotFoundException::new);
     if (useValue) {
-        if (CouponStatus.ISSUED.equals(coupon.getStatus()) && coupon.isIssued()) {
+        if (!coupon.isExpired() && coupon.isIssued()
+                && CouponStatus.ISSUED.equals(coupon.getStatus()) ) {
             coupon.useCoupon(CouponIssue.builder()
                     .userId(coupon.getCouponIssue().getUserId())
                     .issuedAt(coupon.getCouponIssue().getIssuedAt())
                     .usedAt(LocalDateTime.now())
                     .build());
+            coupon.updateDate();
         } else {
+          //TODO 발행된 쿠폰이 아니다 등 에러 메시지 다양화
             return responseService.getFailResult(ResultCode.COUPON_NOT_ISSUED.getMessage()
                     + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
         }
     } else {
-        if (CouponStatus.USED.equals(coupon.getStatus()) && coupon.isIssued() && !coupon.isEnabled()) {
+        if (!coupon.isExpired() && coupon.isIssued() && !coupon.isEnabled()
+                && CouponStatus.USED.equals(coupon.getStatus()) ) {
             coupon.cancelCoupon(CouponIssue.builder()
                     .userId(coupon.getCouponIssue().getUserId())
                     .issuedAt(coupon.getCouponIssue().getIssuedAt())
                     .usedAt(null)
                     .build());
+            coupon.updateDate();
         } else {
             return responseService.getFailResult(ResultCode.COUPON_NOT_USED.getMessage()
                     + failCouponNumAndStatus(coupon.getCouponNum(), coupon.getStatus()));
@@ -175,25 +184,25 @@ public class CouponServiceImpl implements CouponService {
   @Override
   @Transactional
   public CommonResult generateCsv() throws IOException {
-    List<CouponDto> couponDtoList = new ArrayList<>();
+    List<CouponDto> coupons = new ArrayList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     InputStream resource = new ClassPathResource("coupon.csv").getInputStream();
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
-      String line = "";
+      String line;
       int i = 0;
       while ((line = reader.readLine()) != null) {
         i++;
-        String array[] = line.split(",");
-        couponDtoList
-                .add(CouponDto.builder()
+        String[] array = line.split(",");
+        coupons.add(CouponDto.builder()
+                        .couponNum(String.valueOf(i))
                         .status(CouponStatus.CREATED)
                         .expirationAt(LocalDateTime.parse(array[1], formatter)).build());
         if (i % BATCH_SIZE == 0) {
-          couponJdbcRepository.createCoupon(couponDtoList);
-          couponDtoList.clear();
+          couponJdbcRepository.createCoupon(coupons);
+          coupons.clear();
         }
       }
-      couponJdbcRepository.createCoupon(couponDtoList);
+      couponJdbcRepository.createCoupon(coupons);
     } catch (Exception e) {
       return responseService.getFailResult(ResultCode.COUPON_GENERATE_FAIL.name());
     }
@@ -204,4 +213,22 @@ public class CouponServiceImpl implements CouponService {
     return " Coupon Number: " + couponNum + " Coupon Status:" + state;
   }
 
+  @Override
+  @Transactional
+  public void test() {
+    List<CouponDto> coupons = new ArrayList<>();
+    for (long i = 1; i <= 10000; i++) {
+      coupons.add(CouponDto.builder()
+              .couponNum(String.valueOf(i))
+              .status(CouponStatus.CREATED)
+              .expirationAt(LocalDateTime.now().plusDays(expiredDate))
+              .build());
+
+      if (i % BATCH_SIZE == 0) {
+        couponJdbcRepository.createTest(coupons);
+        coupons.clear();
+      }
+    }
+    couponJdbcRepository.createTest(coupons);
+  }
 }

@@ -27,16 +27,16 @@ public class CouponJdbcRepository {
         for (int i = 0; i < couponDtoList.size(); i++) {
           subItems.add(couponDtoList.get(i));
           if ((i + 1) % BATCH_SIZE == 0) {
-            batchCount = batchInsert(BATCH_SIZE, batchCount, subItems);
+            batchCount = batchInsert(batchCount, subItems);
           }
         }
         if (!subItems.isEmpty()) {
-          batchCount = batchInsert(BATCH_SIZE, batchCount, subItems);
+          batchCount = batchInsert(batchCount, subItems);
         }
         return batchCount;
   }
 
-  private int batchInsert(int batchSize, int batchCount, List<CouponDto> subItems) {
+  private int batchInsert(int batchCount, List<CouponDto> subItems) {
         jdbcTemplate.batchUpdate(
                 "INSERT INTO COUPON (`COUPON_NUM`, `STATUS`, `EXPIRATION_AT`, `CREATED_AT`, `UPDATED_AT`, `ENABLED`, `ISSUED`) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -61,5 +61,40 @@ public class CouponJdbcRepository {
         batchCount++;
         return batchCount;
   }
+
+    public int createTest(List<CouponDto> couponDtoList) {
+        int batchCount = 0;
+        List<CouponDto> subItems = new ArrayList<>();
+        for (int i = 0; i < couponDtoList.size(); i++) {
+            subItems.add(couponDtoList.get(i));
+            if ((i + 1) % BATCH_SIZE == 0) {
+                batchCount = testBatchInsert(batchCount, subItems);
+            }
+        }
+        if (!subItems.isEmpty()) {
+            batchCount = testBatchInsert(batchCount, subItems);
+        }
+        return batchCount;
+    }
+
+    private int testBatchInsert(int batchCount, List<CouponDto> subItems) {
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO TEST (`NUM`) " +
+                        "VALUES (?)",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setString(1, subItems.get(i).getCouponNum());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return subItems.size();
+                    }
+                });
+        subItems.clear();
+        batchCount++;
+        return batchCount;
+    }
 
 }

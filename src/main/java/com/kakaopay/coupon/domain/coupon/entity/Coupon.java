@@ -2,23 +2,11 @@ package com.kakaopay.coupon.domain.coupon.entity;
 
 import com.kakaopay.coupon.domain.common.type.CouponStatus;
 import com.kakaopay.coupon.domain.coupon.dto.CouponDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Table(name = "coupon")
 @Entity
 @Getter
 @Builder
@@ -90,6 +78,10 @@ public class Coupon {
     this.couponIssue = couponIssue;
     this.status = CouponStatus.ISSUED;
     this.enabled = true;
+  }
+
+  public void updateDate() {
+    this.updatedAt = LocalDateTime.now();
   }
 
   public boolean isExpired() {
