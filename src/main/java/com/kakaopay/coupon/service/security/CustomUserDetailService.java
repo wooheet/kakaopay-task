@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -24,3 +24,4 @@ public class CustomUserDetailService implements UserDetailsService {
         return AuthUser.of(user);
     }
 }
+

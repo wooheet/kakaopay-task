@@ -47,6 +47,7 @@ public class ResponseService {
 
     public <T> ListResult<T> getListResult(Page<T> page) {
         ListResult<T> result = new ListResult<>();
+        result.setList(page.getContent());
         result.setPage(page);
         setSuccessResult(result);
         return result;

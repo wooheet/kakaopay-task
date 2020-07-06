@@ -1,6 +1,6 @@
 package com.kakaopay.coupon.config;
 
-import com.kakaopay.coupon.domain.common.security.CurrentUserHandlerMethodArgumentResolver;
+import com.kakaopay.coupon.domain.common.oauth2.CurrentUserHandlerMethodArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
