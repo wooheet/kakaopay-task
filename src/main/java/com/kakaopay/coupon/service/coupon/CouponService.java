@@ -33,7 +33,4 @@ public interface CouponService {
 
   @Transactional
   CommonResult generateCsv() throws IOException;
-
-  @Transactional
-  void test();
 }
