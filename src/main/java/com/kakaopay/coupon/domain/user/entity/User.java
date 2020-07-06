@@ -8,19 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "user")
 @Entity
 @Getter
 @NoArgsConstructor
@@ -42,26 +33,12 @@ public class User {
   @OneToMany(mappedBy = "user"
           , fetch = FetchType.LAZY
           , cascade = CascadeType.ALL)
-  private List<UserRole> roles;
+  private List<UserRoles> roles;
 
   public void addRole(UserRoleType roleType) {
     if (roles == null) {
       roles = new ArrayList<>();
     }
-    this.roles.add(UserRole.of(this, roleType));
+    this.roles.add(UserRoles.of(this, roleType));
   }
-
-  public void changeEnabled(boolean enabled) {
-    this.enabled = enabled;
-  }
-
-  private User(UserDto dto) {
-    this.email = dto.getEmail();
-    this.password = dto.getPassword();
-  }
-
-  public static User ofDto(UserDto dto) {
-    return new User(dto);
-  }
-
 }

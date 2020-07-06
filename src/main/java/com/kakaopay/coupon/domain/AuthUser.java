@@ -1,8 +1,7 @@
 package com.kakaopay.coupon.domain;
 
-import com.google.common.collect.Sets;
-import com.kakaopay.coupon.domain.common.type.UserRoleType;
 import com.kakaopay.coupon.domain.user.entity.User;
+import com.kakaopay.coupon.domain.user.entity.UserRoles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,16 +28,10 @@ public class AuthUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Sets.newHashSet(
-                UserRoleType.USER).stream()
+        return user.getRoles().stream()
+                .map(UserRoles::getRole)
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toList());
-
-        //TODO: get user role
-//        return user.getRoles().stream()
-//                .map(UserRole::getRole)
-//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-//                .collect(Collectors.toList());
     }
 
     @Override

@@ -109,4 +109,10 @@ public class CouponController {
     couponService.generateCsv();
     return ResponseEntity.ok().build();
   }
+
+  @GetMapping("test")
+  public ResponseEntity<?> test() {
+    couponService.test();
+    return ResponseEntity.ok().build();
+  }
 }

@@ -8,8 +8,8 @@ create table user
     enabled  bit          null
 );
 
-drop table if exists user_role;
-create table user_role
+drop table if exists user_roles;
+create table user_roles
 (
     role_id bigint auto_increment
         primary key,
@@ -37,16 +37,17 @@ PARTITION BY KEY (id)
 PARTITIONS 200;
 
 -- PARTITION BY RANGE ( YEAR(id) ) (
---
 -- PARTITION p0 VALUES LESS THAN (5000000),
---
 -- PARTITION p1 VALUES LESS THAN (10000000),
---
 -- PARTITION p2 VALUES LESS THAN MAXVALUE
---
 -- );
 
 
-
-
-
+drop table if exists test;
+create table test
+(
+    id            varchar(50) not null
+        primary key
+)
+PARTITION BY KEY (id)
+PARTITIONS 200;

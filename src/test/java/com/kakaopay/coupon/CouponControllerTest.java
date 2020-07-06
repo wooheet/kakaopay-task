@@ -118,7 +118,7 @@ public class CouponControllerTest {
     @Test
     public void createServiceTest() {
         //given
-        Long size = 2L;
+        long size = 2L;
 
         //when
         ListResult<String> result = couponService.create(size);
@@ -148,7 +148,7 @@ public class CouponControllerTest {
         Long userId = 1L;
         //when
         couponService.issueCoupon(userId);
-        CommonResult result = couponService.useCoupon("test", true);
+        CommonResult result = couponService.useCoupon(userId);
 
         //then
         assert(result.isSuccess());
@@ -162,8 +162,8 @@ public class CouponControllerTest {
         Long userId = 1L;
         //when
         couponService.issueCoupon(userId);
-        couponService.useCoupon("test", true);
-        CommonResult result = couponService.useCoupon("test", false);
+        CommonResult useCoupon = couponService.useCoupon(userId);
+        CommonResult result = couponService.cancelCoupon(useCoupon.getMsg());
 
         //then
         assert(result.isSuccess());

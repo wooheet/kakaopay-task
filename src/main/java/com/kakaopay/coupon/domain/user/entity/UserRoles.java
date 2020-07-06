@@ -1,9 +1,7 @@
 package com.kakaopay.coupon.domain.user.entity;
 
 import com.kakaopay.coupon.domain.common.type.UserRoleType;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +16,10 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserRole {
+public class UserRoles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
@@ -34,12 +34,12 @@ public class UserRole {
     @Column(length = 10)
     private UserRoleType role;
 
-    private UserRole(User user, UserRoleType roleType) {
+    private UserRoles(User user, UserRoleType roleType) {
         this.user = user;
         this.role = roleType;
     }
 
-    public static UserRole of(User user, UserRoleType roleType) {
-        return new UserRole(user, roleType);
+    public static UserRoles of(User user, UserRoleType roleType) {
+        return new UserRoles(user, roleType);
     }
 }

@@ -225,4 +225,23 @@ public class CouponServiceImpl implements CouponService {
   private String failCouponNumAndStatus(String couponNum, CouponStatus state) {
     return " Coupon Number: " + couponNum + " Coupon Status:" + state;
   }
+
+  @Override
+  @Transactional
+  public void test() {
+    List<CouponDto> coupons = new ArrayList<>();
+    for (long i = 1; i <= 100000; i++) {
+      coupons.add(CouponDto.builder()
+              .couponNum(String.valueOf(i))
+              .status(CouponStatus.CREATED)
+              .expirationAt(LocalDateTime.now().plusDays(expiredDate))
+              .build());
+
+      if (i % BATCH_SIZE == 0) {
+        couponJdbcRepository.createTest(coupons);
+        coupons.clear();
+      }
+    }
+    couponJdbcRepository.createTest(coupons);
+  }
 }

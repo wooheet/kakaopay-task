@@ -1,6 +1,6 @@
 package com.kakaopay.coupon.config.security;
 
-import com.kakaopay.coupon.domain.user.entity.UserRole;
+import com.kakaopay.coupon.domain.user.entity.UserRoles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -36,7 +36,7 @@ public class JwtTokenProvider {
     }
 
     // Jwt 토큰 생성
-    public String createToken(String userPk, List<UserRole> roles) {
+    public String createToken(String userPk, List<UserRoles> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         claims.put("roles", roles);
         Date now = new Date();

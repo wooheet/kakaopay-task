@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @Repository
 public class CouponJdbcRepository {
-  private final int BATCH_SIZE = 10000;
+  private final int BATCH_SIZE = 100000;
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -64,6 +64,7 @@ public class CouponJdbcRepository {
 
     public int createTest(List<CouponDto> couponDtoList) {
         int batchCount = 0;
+        log.info("start");
         List<CouponDto> subItems = new ArrayList<>();
         for (int i = 0; i < couponDtoList.size(); i++) {
             subItems.add(couponDtoList.get(i));
@@ -79,7 +80,7 @@ public class CouponJdbcRepository {
 
     private int testBatchInsert(int batchCount, List<CouponDto> subItems) {
         jdbcTemplate.batchUpdate(
-                "INSERT INTO TEST (`NUM`) " +
+                "INSERT INTO TEST (`ID`) " +
                         "VALUES (?)",
                 new BatchPreparedStatementSetter() {
                     @Override
@@ -94,6 +95,7 @@ public class CouponJdbcRepository {
                 });
         subItems.clear();
         batchCount++;
+        log.info("end");
         return batchCount;
     }
 
