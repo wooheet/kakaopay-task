@@ -37,7 +37,7 @@ import java.util.List;
 public class CouponServiceImpl implements CouponService {
 
 //  @Value("${spring.date.expired}")
-  private Integer expiredDate = 1;
+  private Integer expiredDate = 3;
 
 //  @Value("${spring.date.batch-size}")
   private int BATCH_SIZE = 100000;
@@ -163,8 +163,11 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   public void notifyExpireCoupon(Long day) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     List<Coupon> coupons = couponRepository.findByExpirationAtIsBetweenAndStatus(
-            LocalDateTime.now(), LocalDateTime.now().plusDays(day), CouponStatus.ISSUED);
+            LocalDateTime.parse(LocalDateTime.now().plusDays(day)
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00", formatter)
+            , LocalDateTime.now().plusDays(day), CouponStatus.ISSUED);
 
     coupons.forEach(c ->
             log.info("쿠폰이(Coupon Number: {}) {}일후 만료 됩니다.", c.getCouponNum(), day));
