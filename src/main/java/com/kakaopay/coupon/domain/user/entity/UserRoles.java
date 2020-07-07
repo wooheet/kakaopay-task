@@ -25,7 +25,7 @@ public class UserRoles {
     @Column(name = "role_id")
     private Long id;
 
-    @BatchSize(size = 1000)
+//    @BatchSize(size = 1000)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @Getter(AccessLevel.NONE)
