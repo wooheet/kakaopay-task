@@ -2,6 +2,7 @@ package com.kakaopay.coupon.domain.user.entity;
 
 import com.kakaopay.coupon.domain.common.type.UserRoleType;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ public class UserRoles {
     @Column(name = "role_id")
     private Long id;
 
+    @BatchSize(size = 1000)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @Getter(AccessLevel.NONE)

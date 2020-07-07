@@ -9,4 +9,6 @@ public interface UserService {
   User signUp(String email, String password);
 
   User getUserByCredential(String email, String password);
+
+  User getAuthenticationUser();
 }

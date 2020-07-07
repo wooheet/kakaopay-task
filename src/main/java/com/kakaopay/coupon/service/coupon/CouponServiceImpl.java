@@ -16,6 +16,8 @@ import com.kakaopay.coupon.service.ResponseService;
 import com.kakaopay.coupon.utils.CouponLib;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +38,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CouponServiceImpl implements CouponService {
 
-//  @Value("${spring.date.expired}")
+  @Value("${spring.date.expired}")
   private Integer expiredDate = 3;
 
-//  @Value("${spring.date.batch-size}")
+  @Value("${spring.date.batch-size}")
   private int BATCH_SIZE = 100000;
 
   private final CouponMapper mapper;
@@ -150,25 +152,31 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
+  @Cacheable(value="dueDateToday")
   public CommonResult dueDateToday(Pageable pageable) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     Page<Coupon> coupons = couponRepository.findByExpirationAtIsBetweenAndStatus(
             LocalDateTime.parse(LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00", formatter)
-            , LocalDateTime.now(), CouponStatus.ISSUED
-            , pageable);
+            , LocalDateTime.parse(LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59", formatter)
+            , CouponStatus.ISSUED, pageable);
 
     Page<CouponDto.Response> map = coupons.map(mapper::toDto);
     return responseService.getListResult(map);
   }
 
   @Override
+  @Cacheable(value="notifyExpireCoupon")
   public void notifyExpireCoupon(Long day) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     List<Coupon> coupons = couponRepository.findByExpirationAtIsBetweenAndStatus(
             LocalDateTime.parse(LocalDateTime.now().plusDays(day)
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00", formatter)
-            , LocalDateTime.now().plusDays(day), CouponStatus.ISSUED);
+            , LocalDateTime.parse(LocalDateTime.now()
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59", formatter).plusDays(day)
+            , CouponStatus.ISSUED);
 
     coupons.forEach(c ->
             log.info("쿠폰이(Coupon Number: {}) {}일후 만료 됩니다.", c.getCouponNum(), day));

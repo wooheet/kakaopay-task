@@ -18,12 +18,13 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
+        default_batch_fetch_size: 1000
 
   jwt:
     secret: kakaopay/coupon!
 
   date:
-    expired: 1
+    expired: 3
     batch-size: 100000
 
 logging:

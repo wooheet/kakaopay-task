@@ -1,11 +1,10 @@
 package com.kakaopay.coupon.api;
 
 import com.kakaopay.coupon.domain.user.entity.User;
-import com.kakaopay.coupon.exception.CUserNotFoundException;
-import com.kakaopay.coupon.repository.user.UserRepository;
 import com.kakaopay.coupon.response.CommonResult;
 import com.kakaopay.coupon.response.ListResult;
 import com.kakaopay.coupon.service.coupon.CouponService;
+import com.kakaopay.coupon.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,8 +23,8 @@ import javax.validation.Valid;
 @RequestMapping(value = "/v1/coupons")
 public class CouponController {
 
+  private final UserService userService;
   private final CouponService couponService;
-  private final UserRepository userRepository;
 
   @ApiOperation(value = "쿠폰 생성", notes = "랜덤한 코드의 쿠폰을 N개 생성")
   @PostMapping
@@ -39,29 +36,21 @@ public class CouponController {
   @ApiOperation(value = "쿠폰 지급", notes = "생성된 쿠폰중 하나를 사용자에게 지급")
   @PutMapping("issue")
   public CommonResult issueCoupon() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = userRepository.findByEmail(
-            authentication.getName()).orElseThrow(CUserNotFoundException::new);
-
+    User user = userService.getAuthenticationUser();
     return couponService.issueCoupon(user.getId());
   }
 
   @ApiOperation(value = "쿠폰 조회", notes = "사용자에게 지급된 쿠폰을 조회")
   @GetMapping
   public CommonResult getCouponByUserId(Pageable pageable) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = userRepository.findByEmail(
-            authentication.getName()).orElseThrow(CUserNotFoundException::new);
-
+    User user = userService.getAuthenticationUser();
     return couponService.findCouponByUserId(user.getId(), pageable);
   }
 
   @ApiOperation(value = "쿠폰 사용", notes = "사용자의 지급된 쿠폰중 하나를 사용")
   @PutMapping("use")
   public CommonResult useCoupon() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    User user = userRepository.findByEmail(
-            authentication.getName()).orElseThrow(CUserNotFoundException::new);
+    User user = userService.getAuthenticationUser();
     return couponService.useCoupon(user.getId());
   }
 
