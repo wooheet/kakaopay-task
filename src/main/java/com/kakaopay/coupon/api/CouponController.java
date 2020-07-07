@@ -28,7 +28,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Api(tags = {"3. Coupon"})
+@Api(tags = {"2. Coupon"})
 @RequestMapping(value = "/v1/coupons")
 public class CouponController {
 

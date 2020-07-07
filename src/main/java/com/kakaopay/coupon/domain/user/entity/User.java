@@ -1,12 +1,7 @@
 package com.kakaopay.coupon.domain.user.entity;
 
 import com.kakaopay.coupon.domain.common.type.UserRoleType;
-import com.kakaopay.coupon.domain.user.dto.UserDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,6 +34,9 @@ public class User {
     if (roles == null) {
       roles = new ArrayList<>();
     }
-    this.roles.add(UserRoles.of(this, roleType));
+    this.roles.add(UserRoles.builder()
+            .user(this)
+            .roleType(roleType)
+            .build());
   }
 }

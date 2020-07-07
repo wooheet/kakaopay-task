@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserRoles {
@@ -34,12 +33,9 @@ public class UserRoles {
     @Column(length = 10)
     private UserRoleType role;
 
+    @Builder
     private UserRoles(User user, UserRoleType roleType) {
         this.user = user;
         this.role = roleType;
-    }
-
-    public static UserRoles of(User user, UserRoleType roleType) {
-        return new UserRoles(user, roleType);
     }
 }
