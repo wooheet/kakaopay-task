@@ -14,13 +14,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class CouponDto {
 
-  //TODO setter 삭제
   @Id
   private Long id;
   private String couponNum;
@@ -31,24 +29,6 @@ public class CouponDto {
   private Long userId;
   private LocalDateTime usedAt;
   private LocalDateTime issuedAt;
-
-  protected CouponDto(Coupon entity) {
-    this.id = entity.getId();
-    this.couponNum = entity.getCouponNum();
-    this.status = entity.getStatus();
-    this.expirationAt = entity.getExpirationAt();
-    this.createdAt = entity.getCreatedAt();
-
-    Optional.ofNullable(entity.getCouponIssue()).ifPresent(t -> {
-      this.userId = entity.getCouponIssue().getUserId();
-      this.usedAt = entity.getCouponIssue().getUsedAt();
-      this.issuedAt = entity.getCouponIssue().getIssuedAt();
-    });
-  }
-
-  public static CouponDto ofEntity(Coupon entity) {
-    return new CouponDto(entity);
-  }
 
   @Data
   public static class Response {

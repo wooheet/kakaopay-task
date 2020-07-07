@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -31,15 +32,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    public SecurityExpressionHandler<org.springframework.security.web.FilterInvocation> expressionHandler() {
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
-//
-//        DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
-//        handler.setRoleHierarchy(roleHierarchy);
-//
-//        return handler;
-//    }
+    public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+
+        DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
+        handler.setRoleHierarchy(roleHierarchy);
+
+        return handler;
+    }
 
 
     @Override
@@ -55,8 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/signup").permitAll()
                 .antMatchers("/v1/signin").permitAll()
                 .anyRequest().authenticated()
+                .expressionHandler(expressionHandler())
 //                .anyRequest().hasRole("USER")
-//                .expressionHandler(expressionHandler())
                 .and().exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and().exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and().addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)

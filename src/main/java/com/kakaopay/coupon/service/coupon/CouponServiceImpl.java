@@ -101,7 +101,7 @@ public class CouponServiceImpl implements CouponService {
     List<Coupon> coupons = couponRepository.findByCouponIssueUserId(userId);
     Coupon coupon = coupons.stream().filter(Coupon::isIssued)
           .filter(c -> !c.isExpired()).filter(c -> c.getStatus().equals(CouponStatus.ISSUED))
-          .findFirst().orElseThrow(CCouponNotFoundException::new);
+          .findFirst().orElseThrow(() -> new CCouponNotFoundException("사용 가능한 쿠폰이 없습니다."));
 
     coupon.useCoupon(CouponIssue.builder()
             .userId(coupon.getCouponIssue().getUserId())
@@ -117,7 +117,7 @@ public class CouponServiceImpl implements CouponService {
   @Transactional
   public CommonResult cancelCoupon(String couponNum) {
     Coupon coupon = couponRepository.findByCouponNum(couponNum)
-            .orElseThrow(CCouponNotFoundException::new);
+            .orElseThrow(() -> new CCouponNotFoundException("사용 가능한 쿠폰이 없습니다."));
 
     if (!coupon.isExpired() && coupon.isIssued()
             && !coupon.isEnabled() && CouponStatus.USED.equals(coupon.getStatus())) {
@@ -183,6 +183,8 @@ public class CouponServiceImpl implements CouponService {
               .couponNum(String.valueOf(i))
               .status(CouponStatus.CREATED)
               .expirationAt(LocalDateTime.now().plusDays(expiredDate))
+              .createdAt(LocalDateTime.now())
+              .updatedAt(LocalDateTime.now())
               .build());
 
       if (i % BATCH_SIZE == 0) {
@@ -203,18 +205,24 @@ public class CouponServiceImpl implements CouponService {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
       String line;
       int i = 0;
+
       while ((line = reader.readLine()) != null) {
         i++;
         String[] array = line.split(",");
+
         coupons.add(CouponDto.builder()
                         .couponNum(String.valueOf(i))
                         .status(CouponStatus.CREATED)
-                        .expirationAt(LocalDateTime.parse(array[1], formatter)).build());
+                        .expirationAt(LocalDateTime.parse(array[1], formatter))
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now()).build());
+
         if (i % BATCH_SIZE == 0) {
           couponJdbcRepository.createCoupon(coupons);
           coupons.clear();
         }
       }
+
       couponJdbcRepository.createCoupon(coupons);
     } catch (Exception e) {
       return responseService.getFailResult(ResultCode.COUPON_GENERATE_FAIL.name());

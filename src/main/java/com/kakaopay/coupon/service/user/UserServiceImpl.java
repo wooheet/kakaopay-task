@@ -53,10 +53,10 @@ public class UserServiceImpl implements UserService {
       @Override
       public User getUserByCredential(String email, String password) {
           User findUser = userRepository.findByEmail(email)
-                  .orElseThrow(CEmailSigninFailedException::new);
+                  .orElseThrow(() -> new CEmailSigninFailedException("이메일 또는 비밀번호 정보가 일치하지 않습니다."));
 
           if (!passwordEncoder.matches(password, findUser.getPassword()))
-              throw new CEmailSigninFailedException();
+              throw new CEmailSigninFailedException("이메일 또는 비밀번호 정보가 일치하지 않습니다.");
 
           return findUser;
       }
