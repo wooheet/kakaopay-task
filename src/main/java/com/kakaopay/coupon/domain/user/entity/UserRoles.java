@@ -25,7 +25,7 @@ public class UserRoles {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id")
     @Getter(AccessLevel.NONE)
     private User user;
 
