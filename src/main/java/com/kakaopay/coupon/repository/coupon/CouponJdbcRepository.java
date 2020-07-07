@@ -1,6 +1,6 @@
 package com.kakaopay.coupon.repository.coupon;
 
-import com.kakaopay.coupon.domain.coupon.dto.CouponDto;
+import com.kakaopay.coupon.api.CouponDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -80,7 +80,7 @@ public class CouponJdbcRepository {
 
     private int testBatchInsert(int batchCount, List<CouponDto> subItems) {
         jdbcTemplate.batchUpdate(
-                "INSERT INTO TEST (`ID`) " +
+                "INSERT INTO PERFORMANCE (`COUPON_NUM`) " +
                         "VALUES (?)",
                 new BatchPreparedStatementSetter() {
                     @Override

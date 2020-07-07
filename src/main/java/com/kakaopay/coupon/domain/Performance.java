@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TestEntity {
+public class Performance {
     @Id
-    private String id;
+    private String couponNum;
 }

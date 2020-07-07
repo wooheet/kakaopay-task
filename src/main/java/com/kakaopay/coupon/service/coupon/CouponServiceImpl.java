@@ -4,7 +4,7 @@ package com.kakaopay.coupon.service.coupon;
 import com.kakaopay.coupon.api.mapper.CouponMapper;
 import com.kakaopay.coupon.domain.common.ResultCode;
 import com.kakaopay.coupon.domain.common.type.CouponStatus;
-import com.kakaopay.coupon.domain.coupon.dto.CouponDto;
+import com.kakaopay.coupon.api.CouponDto;
 import com.kakaopay.coupon.domain.coupon.entity.Coupon;
 import com.kakaopay.coupon.domain.coupon.entity.CouponIssue;
 import com.kakaopay.coupon.exception.CCouponNotFoundException;
@@ -236,7 +236,7 @@ public class CouponServiceImpl implements CouponService {
 
   @Override
   @Transactional
-  public void test() {
+  public void performance() {
     List<CouponDto> coupons = new ArrayList<>();
     for (long i = 1; i <= 100000; i++) {
       coupons.add(CouponDto.builder()

@@ -47,14 +47,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic().disable()// rest api 이므로 기본설정 사용안함. 기본설정은 비인증시 로그인폼 화면으로 리다이렉트 된다.
-                .csrf().disable() // rest api이므로 csrf 보안이 필요없으므로 disable처리.
+                .httpBasic().disable()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt token으로 인증할것이므로 세션필요없으므로 생성안함.
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/v1/signup").permitAll()
                 .antMatchers("/v1/signin").permitAll()
+                .antMatchers("/v1/coupons/performance").permitAll()
                 .anyRequest().authenticated()
                 .expressionHandler(expressionHandler())
 //                .anyRequest().hasRole("USER")

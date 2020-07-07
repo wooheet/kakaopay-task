@@ -49,7 +49,7 @@ public class SignControllerTest {
 
         User savedUser = userRepository.save(User.builder()
                 .email("haewon@gmail.com")
-                .password(passwordEncoder.encode("1234")).build());
+                .password(passwordEncoder.encode("1234567")).build());
 
         for (UserRoleType roleType : roleTypes) {
             savedUser.addRole(roleType);
@@ -60,7 +60,7 @@ public class SignControllerTest {
     public void signin() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("email", "haewon@gmail.com");
-        params.add("password", "1234");
+        params.add("password", "1234567");
         mockMvc.perform(post("/v1/signin").params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,7 +85,6 @@ public class SignControllerTest {
     }
 
 //    @Test
-//    @Ignore
 //    public void signinFail() throws Exception {
 //        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 //        params.add("email", "haewon@gmail.com");

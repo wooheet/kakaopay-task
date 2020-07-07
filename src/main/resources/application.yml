@@ -37,8 +37,6 @@ logging:
 server:
   tomcat:
     max-connections: 10000
-    max-threads: 200
-    min-spare-threads: 1
   port: 19090
 
 ---
@@ -50,6 +48,3 @@ spring:
     url: ${DATABASE_URL:jdbc:mysql://localhost:3306/kakaopay?serverTimezone=Asia/Seoul&autoReconnect=true&characterEncoding=UTF-8&rewriteBatchedStatements=true}
     username: root
     password: toor
-
-
-#    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/kakaopay?serverTimezone=UTC&characterEncoding=UTF-8}

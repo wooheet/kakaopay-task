@@ -1,7 +1,5 @@
 package com.kakaopay.coupon.service.coupon;
 
-import com.kakaopay.coupon.domain.common.ResultCode;
-import com.kakaopay.coupon.domain.coupon.dto.CouponDto;
 import com.kakaopay.coupon.response.CommonResult;
 import com.kakaopay.coupon.response.ListResult;
 import org.springframework.data.domain.Pageable;
@@ -38,5 +36,5 @@ public interface CouponService {
   CommonResult generateCsv() throws IOException;
 
   @Transactional
-  void test();
+  void performance();
 }

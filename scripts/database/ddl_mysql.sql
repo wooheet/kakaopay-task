@@ -43,11 +43,11 @@ PARTITIONS 200;
 -- );
 
 
-drop table if exists test;
-create table test
+drop table if exists performance;
+create table performance
 (
-    id            varchar(50) not null
+    coupon_num            varchar(50) not null
         primary key
 )
-PARTITION BY KEY (id)
+PARTITION BY KEY (coupon_num)
 PARTITIONS 200;

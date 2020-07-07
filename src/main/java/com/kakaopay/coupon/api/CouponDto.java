@@ -1,17 +1,10 @@
-package com.kakaopay.coupon.domain.coupon.dto;
+package com.kakaopay.coupon.api;
 
 import com.kakaopay.coupon.domain.common.type.CouponStatus;
-import com.kakaopay.coupon.domain.coupon.entity.Coupon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Builder
 @Getter
