@@ -153,7 +153,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  @Cacheable(value="coupon", key = "#duedate")
+  @Cacheable(value="dueDateToday")
   public CommonResult dueDateToday(Pageable pageable) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     Page<Coupon> coupons = couponRepository.findByExpirationAtIsBetweenAndStatus(
@@ -168,7 +168,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  @Cacheable(value="coupon", key = "#notify")
+  @Cacheable(value="notifyExpireCoupon")
   public void notifyExpireCoupon(Long day) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -263,7 +263,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  @CacheEvict(value="book", key="#duedate")
+  @CacheEvict(value="dueDateToday")
   public void cacheRefresh() {
     log.info("cache clear => credential");
   }
