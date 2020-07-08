@@ -58,9 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/coupons/performance").permitAll()
                 .anyRequest().authenticated()
                 .expressionHandler(expressionHandler())
-//                .anyRequest().hasRole("USER")
-                .and().exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
-                .and().exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and().exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()) //익명 사용자가 아니면 AccessDeniedHandler에게 위임
+                .and().exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint()) //익명 사용자라면 AuthenticationEntryPoint 실행
                 .and().addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider)
                 , UsernamePasswordAuthenticationFilter.class); // jwt token 필터를 id/password 인증 필터 전에 넣어라.
 

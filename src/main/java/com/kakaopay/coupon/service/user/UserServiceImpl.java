@@ -10,6 +10,7 @@ import com.kakaopay.coupon.exception.CEmailSignupFailedException;
 import com.kakaopay.coupon.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
       }
 
       @Override
-      @Cacheable(value="signIn")
+      @Cacheable(value="user", key = "#credential")
       public User getUserByCredential(String email, String password) {
           User findUser = userRepository.findByEmail(email)
                   .orElseThrow(() -> new CEmailSigninFailedException("이메일 또는 비밀번호 정보가 일치하지 않습니다."));
@@ -67,11 +68,17 @@ public class UserServiceImpl implements UserService {
       }
 
       @Override
-      @Cacheable(value="getAuthenticationUser")
+      @Cacheable(value="user", key = "#authentication")
       public User getAuthenticationUser() {
           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
           return userRepository.findByEmail(
                   authentication.getName()).orElseThrow(() -> new CUserNotFoundException("인증된 유저를 찾을 수 없습니다."));
+      }
+
+      @Override
+      @CacheEvict(value="book", key="#credential")
+      public void cacheRefresh() {
+          log.info("cache clear => credential");
       }
 
 }

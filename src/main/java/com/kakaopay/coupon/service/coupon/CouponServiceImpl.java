@@ -17,6 +17,7 @@ import com.kakaopay.coupon.utils.CouponLib;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -152,7 +153,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  @Cacheable(value="dueDateToday")
+  @Cacheable(value="coupon", key = "#duedate")
   public CommonResult dueDateToday(Pageable pageable) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     Page<Coupon> coupons = couponRepository.findByExpirationAtIsBetweenAndStatus(
@@ -167,7 +168,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  @Cacheable(value="notifyExpireCoupon")
+  @Cacheable(value="coupon", key = "#notify")
   public void notifyExpireCoupon(Long day) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -259,5 +260,11 @@ public class CouponServiceImpl implements CouponService {
       }
     }
     couponJdbcRepository.createTest(coupons);
+  }
+
+  @Override
+  @CacheEvict(value="book", key="#duedate")
+  public void cacheRefresh() {
+    log.info("cache clear => credential");
   }
 }

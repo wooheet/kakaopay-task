@@ -98,4 +98,10 @@ public class CouponController {
     couponService.performance();
     return ResponseEntity.ok().build();
   }
+
+  @PutMapping("refresh")
+  public ResponseEntity<?> refresh() {
+    couponService.cacheRefresh();
+    return ResponseEntity.ok().build();
+  }
 }

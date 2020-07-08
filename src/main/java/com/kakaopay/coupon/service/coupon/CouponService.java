@@ -37,4 +37,6 @@ public interface CouponService {
 
   @Transactional
   void performance();
+
+  void cacheRefresh();
 }

@@ -11,4 +11,6 @@ public interface UserService {
   User getUserByCredential(String email, String password);
 
   User getAuthenticationUser();
+
+  void cacheRefresh();
 }
